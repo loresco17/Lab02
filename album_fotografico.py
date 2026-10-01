@@ -1,21 +1,67 @@
+import csv
+
+
 def carica_da_file(file_path):
-    """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
-    # TODO
+    try:
+        with open(file_path, 'r') as infile:
+            r=csv.reader(infile)
+            next(r)
+            album={}
+            for line in r:
+                line[4]=int(line[4])
+                line[3]=int(line[3])
+                if line[4] not in album:
+                    album[line[4]]={line[0]:line[1:4]}
+                else:
+                    album[line[4]][line[0]]=line[1:4]
+        return album
+    except FileNotFoundError:
+        return None
 
 
 def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
-    """Aggiunge una foto all'album, creando l'anno al volo se non è ancora presente"""
-    # TODO
+    if not 1 <= mese <= 12:
+        return None
+    for a in album:
+        if codice in album[a]:
+            return None
+    try:
+        with open(file_path, 'a', newline='') as infile:
+            w=csv.writer(infile)
+            if anno in album:
+                album[anno][codice] = [titolo, autore, mese]
+            else:
+                album[anno] = {codice: [titolo, autore, mese]}
+        w.writerow((codice, titolo, autore, mese, anno))
+        return codice
+
+    except FileNotFoundError:
+        return None
 
 
 def cerca_foto(album, codice):
-    """Cerca una foto nell'album dato il codice"""
-    # TODO
+    anno_giusto=None
+    for anno in album:
+        if codice in album[anno]:
+            anno_giusto=anno
+            titolo,autore,mese = album[anno][codice]
+            return f'{codice}, {titolo}, {autore}, {mese}, {anno}'
+    if anno_giusto:
+        titolo, autore, mese = album[anno_giusto][codice]
+        return f'{codice}, {titolo}, {autore}, {mese}, {anno_giusto}'.rstrip
+    else:
+        return None
+
 
 
 def elenco_foto_anno_per_titolo(album, anno):
-    """Ordina i titoli delle foto di un dato anno in ordine alfabetico"""
-    # TODO
+    if anno in album:
+        titoli=[]
+        for codice in album[anno]:
+            titoli.append(album[anno][codice][0])
+        return sorted(titoli)
+    else :
+        return None
 
 
 def main():
