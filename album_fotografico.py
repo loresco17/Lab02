@@ -40,18 +40,11 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
 
 
 def cerca_foto(album, codice):
-    anno_giusto=None
     for anno in album:
         if codice in album[anno]:
-            anno_giusto=anno
             titolo,autore,mese = album[anno][codice]
-            return f'{codice}, {titolo}, {autore}, {mese}, {anno}'
-    if anno_giusto:
-        titolo, autore, mese = album[anno_giusto][codice]
-        return f'{codice}, {titolo}, {autore}, {mese}, {anno_giusto}'.rstrip
-    else:
-        return None
-
+            return f'{codice}, {titolo}, {autore}, {mese}, {anno}'.rstrip()
+    return None
 
 
 def elenco_foto_anno_per_titolo(album, anno):
